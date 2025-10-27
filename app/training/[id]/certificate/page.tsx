@@ -6,6 +6,7 @@ import { getCurrentUser } from '@/lib/auth';
 import Header from '@/components/shared/Header';
 import PageContainer from '@/components/shared/PageContainer';
 import trainingData from '@/lib/mock-data/training.json';
+import trainingContent from '@/lib/mock-data/training-content.json';
 import { getTrainingProgress } from '@/lib/training-progress';
 import { getEnrollments } from '@/lib/training-manager';
 
@@ -16,6 +17,7 @@ export default function CertificatePage() {
   
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [training, setTraining] = useState<any>(null);
+  const [content, setContent] = useState<any>(null);
   const [progress, setProgress] = useState<any>(null);
   const [enrollment, setEnrollment] = useState<any>(null);
 
@@ -29,6 +31,9 @@ export default function CertificatePage() {
     
     const trainingDetail = trainingData.programs.find(p => p.id === trainingId);
     setTraining(trainingDetail);
+    
+    const trainingContentData = (trainingContent as any)[trainingId];
+    setContent(trainingContentData);
     
     const userProgress = getTrainingProgress(trainingId);
     setProgress(userProgress);
@@ -46,7 +51,7 @@ export default function CertificatePage() {
     alert('🔗 Fitur share sertifikat akan segera hadir!\n\nAnda dapat membagikan sertifikat ke LinkedIn, Facebook, atau platform lainnya.');
   };
 
-  if (!currentUser || !training || !progress || !enrollment) {
+  if (!currentUser || !training || !content || !progress || !enrollment) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-pulse text-gray-600">Memuat...</div>
@@ -54,7 +59,13 @@ export default function CertificatePage() {
     );
   }
 
-  const isCompleted = enrollment.status === 'completed' || enrollment.progress === 100;
+  // Calculate actual progress from completed lessons
+  const totalLessons = content.modules.reduce((sum: number, mod: any) => sum + mod.lessons.length, 0);
+  const completedLessons = progress?.modules.reduce((sum: number, mod: any) => 
+    sum + mod.lessons.filter((l: any) => l.completed).length, 0) || 0;
+  const actualProgress = Math.round((completedLessons / totalLessons) * 100);
+  
+  const isCompleted = enrollment.status === 'completed' || enrollment.progress === 100 || actualProgress === 100;
   const completionDate = enrollment.enrolledAt ? new Date(enrollment.enrolledAt) : new Date();
   completionDate.setDate(completionDate.getDate() + 56); // 8 weeks later
 
@@ -81,11 +92,11 @@ export default function CertificatePage() {
                 Anda perlu menyelesaikan seluruh modul pelatihan untuk mendapatkan sertifikat.
               </p>
               <div className="bg-white rounded-xl p-4 mb-6">
-                <div className="text-lg font-bold text-gray-900 mb-2">Progress Anda: {enrollment.progress}%</div>
+                <div className="text-lg font-bold text-gray-900 mb-2">Progress Anda: {actualProgress}%</div>
                 <div className="w-full bg-gray-200 rounded-full h-3">
                   <div
                     className="bg-gradient-to-r from-yellow-500 to-orange-500 h-3 rounded-full transition-all"
-                    style={{ width: `${enrollment.progress}%` }}
+                    style={{ width: `${actualProgress}%` }}
                   />
                 </div>
               </div>
