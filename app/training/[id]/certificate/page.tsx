@@ -54,7 +54,7 @@ export default function CertificatePage() {
     );
   }
 
-  const isCompleted = enrollment.status === 'completed' && progress?.totalPoints >= (progress?.passingScore || 70);
+  const isCompleted = enrollment.status === 'completed' || enrollment.progress === 100;
   const completionDate = enrollment.enrolledAt ? new Date(enrollment.enrolledAt) : new Date();
   completionDate.setDate(completionDate.getDate() + 56); // 8 weeks later
 

@@ -8,6 +8,7 @@ import PageContainer from '@/components/shared/PageContainer';
 import trainingData from '@/lib/mock-data/training.json';
 import trainingContent from '@/lib/mock-data/training-content.json';
 import { getTrainingProgress, initializeTrainingProgress } from '@/lib/training-progress';
+import { getEnrollments } from '@/lib/training-manager';
 
 export default function TrainingDetailPage() {
   const router = useRouter();
@@ -18,6 +19,7 @@ export default function TrainingDetailPage() {
   const [training, setTraining] = useState<any>(null);
   const [content, setContent] = useState<any>(null);
   const [progress, setProgress] = useState<any>(null);
+  const [enrollment, setEnrollment] = useState<any>(null);
 
   useEffect(() => {
     const user = getCurrentUser();
@@ -41,6 +43,11 @@ export default function TrainingDetailPage() {
       userProgress = initializeTrainingProgress(trainingId);
     }
     setProgress(userProgress);
+    
+    // Load enrollment
+    const enrollments = getEnrollments();
+    const userEnrollment = enrollments.find(e => e.trainingId === trainingId);
+    setEnrollment(userEnrollment);
   }, [router, trainingId]);
 
   const handleStartModule = (moduleIndex: number) => {
@@ -71,6 +78,7 @@ export default function TrainingDetailPage() {
   const completedLessons = progress?.modules.reduce((sum: number, mod: any) => 
     sum + mod.lessons.filter((l: any) => l.completed).length, 0) || 0;
   const overallProgress = Math.round((completedLessons / totalLessons) * 100);
+  const isCompleted = enrollment?.status === 'completed' || enrollment?.progress === 100 || overallProgress === 100;
 
   return (
     <>
@@ -112,6 +120,21 @@ export default function TrainingDetailPage() {
               style={{ width: `${overallProgress}%` }}
             />
           </div>
+          
+          {/* Certificate Button */}
+          {isCompleted && (
+            <div className="mt-6">
+              <button
+                onClick={() => router.push(`/training/${trainingId}/certificate`)}
+                className="w-full px-6 py-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl font-bold text-lg hover:from-green-700 hover:to-emerald-700 transition-all shadow-2xl flex items-center justify-center gap-3"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                📄 Lihat Sertifikat Penyelesaian
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Stats Cards */}
