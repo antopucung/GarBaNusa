@@ -1,0 +1,49 @@
+{
+  "candidates": [
+    {
+      "id": "cand-001",
+      "name": "Agus Pratama",
+      "nip": "197305122000031001",
+      "currentPosition": "Senior Manager",
+      "unit": "Public Works",
+      "klPemda": "Ministry of Public Works",
+      "meritScore": 92,
+      "competencyMatch": 95,
+      "performance": 90,
+      "feedback360": 88,
+      "learningAgility": 90,
+      "tenure": 8,
+      "avatar": "/avatars/default.svg"
+    },
+    {
+      "id": "cand-002",
+      "name": "Dewi Lestari",
+      "nip": "197809152003022001",
+      "currentPosition": "Manager",
+      "unit": "Health Services",
+      "klPemda": "Ministry of Health",
+      "meritScore": 89,
+      "competencyMatch": 91,
+      "performance": 88,
+      "feedback360": 92,
+      "learningAgility": 85,
+      "tenure": 7,
+      "avatar": "/avatars/default.svg"
+    },
+    {
+      "id": "cand-003",
+      "name": "Rina Sari",
+      "nip": "198505152010012001",
+      "currentPosition": "Manager",
+      "unit": "Education",
+      "klPemda": "Ministry of Education",
+      "meritScore": 87,
+      "competencyMatch": 88,
+      "performance": 87,
+      "feedback360": 85,
+      "learningAgility": 88,
+      "tenure": 6,
+      "avatar": "/avatars/default.svg"
+    }
+  ]
+}

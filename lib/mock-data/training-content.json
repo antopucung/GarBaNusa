@@ -1,0 +1,359 @@
+{
+  "train-001": {
+    "modules": [
+      {
+        "id": "mod-1",
+        "title": "Fondasi Kepemimpinan",
+        "description": "Memahami prinsip dasar kepemimpinan efektif",
+        "duration": "2 minggu",
+        "lessons": [
+          {
+            "id": "lesson-1",
+            "title": "Definisi Kepemimpinan Modern",
+            "type": "video",
+            "duration": "15 menit",
+            "points": 10
+          },
+          {
+            "id": "lesson-2",
+            "title": "Gaya Kepemimpinan",
+            "type": "reading",
+            "duration": "20 menit",
+            "points": 10
+          },
+          {
+            "id": "lesson-3",
+            "title": "Kuis: Fondasi Kepemimpinan",
+            "type": "quiz",
+            "duration": "10 menit",
+            "points": 30,
+            "questions": 10
+          }
+        ]
+      },
+      {
+        "id": "mod-2",
+        "title": "Komunikasi Efektif",
+        "description": "Teknik komunikasi untuk pemimpin",
+        "duration": "2 minggu",
+        "lessons": [
+          {
+            "id": "lesson-4",
+            "title": "Komunikasi Verbal & Non-Verbal",
+            "type": "video",
+            "duration": "18 menit",
+            "points": 10
+          },
+          {
+            "id": "lesson-5",
+            "title": "Active Listening",
+            "type": "interactive",
+            "duration": "25 menit",
+            "points": 20
+          },
+          {
+            "id": "lesson-6",
+            "title": "Kuis: Komunikasi",
+            "type": "quiz",
+            "duration": "10 menit",
+            "points": 30,
+            "questions": 10
+          }
+        ]
+      },
+      {
+        "id": "mod-3",
+        "title": "Pengambilan Keputusan",
+        "description": "Framework untuk keputusan strategis",
+        "duration": "2 minggu",
+        "lessons": [
+          {
+            "id": "lesson-7",
+            "title": "Analisis Data untuk Keputusan",
+            "type": "video",
+            "duration": "20 menit",
+            "points": 10
+          },
+          {
+            "id": "lesson-8",
+            "title": "Studi Kasus: Keputusan Sulit",
+            "type": "case-study",
+            "duration": "30 menit",
+            "points": 25
+          },
+          {
+            "id": "lesson-9",
+            "title": "Ujian Akhir",
+            "type": "exam",
+            "duration": "45 menit",
+            "points": 50,
+            "questions": 20
+          }
+        ]
+      }
+    ],
+    "badges": [
+      {
+        "id": "badge-starter",
+        "name": "Pemula Leadership",
+        "description": "Menyelesaikan modul pertama",
+        "icon": "🎯",
+        "requirement": "complete_module_1"
+      },
+      {
+        "id": "badge-communicator",
+        "name": "Komunikator Handal",
+        "description": "Skor 80%+ pada kuis komunikasi",
+        "icon": "💬",
+        "requirement": "quiz_score_80"
+      },
+      {
+        "id": "badge-graduate",
+        "name": "Lulusan Leadership",
+        "description": "Menyelesaikan seluruh pelatihan",
+        "icon": "🎓",
+        "requirement": "complete_all"
+      }
+    ],
+    "totalPoints": 195,
+    "passingScore": 70
+  },
+  "train-002": {
+    "modules": [
+      {
+        "id": "mod-1",
+        "title": "Fondasi Data Analytics",
+        "description": "Memahami konsep dasar analisis data",
+        "duration": "2 minggu",
+        "lessons": [
+          {
+            "id": "lesson-1",
+            "title": "Pengantar Data Analytics",
+            "type": "video",
+            "duration": "20 menit",
+            "points": 10
+          },
+          {
+            "id": "lesson-2",
+            "title": "Statistical Thinking",
+            "type": "reading",
+            "duration": "25 menit",
+            "points": 10
+          },
+          {
+            "id": "lesson-3",
+            "title": "Kuis: Fondasi Analytics",
+            "type": "quiz",
+            "duration": "15 menit",
+            "points": 30,
+            "questions": 10
+          }
+        ]
+      },
+      {
+        "id": "mod-2",
+        "title": "Tools & Techniques",
+        "description": "Menguasai tools analisis data modern",
+        "duration": "2 minggu",
+        "lessons": [
+          {
+            "id": "lesson-4",
+            "title": "Excel untuk Analytics",
+            "type": "video",
+            "duration": "30 menit",
+            "points": 10
+          },
+          {
+            "id": "lesson-5",
+            "title": "Visualisasi Data",
+            "type": "interactive",
+            "duration": "40 menit",
+            "points": 20
+          },
+          {
+            "id": "lesson-6",
+            "title": "Kuis: Tools Analytics",
+            "type": "quiz",
+            "duration": "15 menit",
+            "points": 30,
+            "questions": 10
+          }
+        ]
+      },
+      {
+        "id": "mod-3",
+        "title": "Advanced Analytics",
+        "description": "Teknik analytics tingkat lanjut",
+        "duration": "2 minggu",
+        "lessons": [
+          {
+            "id": "lesson-7",
+            "title": "Predictive Analytics",
+            "type": "video",
+            "duration": "25 menit",
+            "points": 10
+          },
+          {
+            "id": "lesson-8",
+            "title": "Studi Kasus: Policy Analysis",
+            "type": "case-study",
+            "duration": "45 menit",
+            "points": 25
+          },
+          {
+            "id": "lesson-9",
+            "title": "Ujian Akhir",
+            "type": "exam",
+            "duration": "60 menit",
+            "points": 50,
+            "questions": 20
+          }
+        ]
+      }
+    ],
+    "badges": [
+      {
+        "id": "badge-analyst",
+        "name": "Data Analyst",
+        "description": "Menyelesaikan modul pertama",
+        "icon": "📊",
+        "requirement": "complete_module_1"
+      },
+      {
+        "id": "badge-visualizer",
+        "name": "Master Visualisasi",
+        "description": "Skor 85%+ pada kuis tools",
+        "icon": "📈",
+        "requirement": "quiz_score_85"
+      },
+      {
+        "id": "badge-expert",
+        "name": "Analytics Expert",
+        "description": "Menyelesaikan seluruh pelatihan",
+        "icon": "🎓",
+        "requirement": "complete_all"
+      }
+    ],
+    "totalPoints": 195,
+    "passingScore": 75
+  },
+  "train-003": {
+    "modules": [
+      {
+        "id": "mod-1",
+        "title": "Digital Mindset",
+        "description": "Membangun pola pikir digital",
+        "duration": "1 minggu",
+        "lessons": [
+          {
+            "id": "lesson-1",
+            "title": "Era Digital di Pemerintahan",
+            "type": "video",
+            "duration": "15 menit",
+            "points": 10
+          },
+          {
+            "id": "lesson-2",
+            "title": "Change Management",
+            "type": "reading",
+            "duration": "20 menit",
+            "points": 10
+          },
+          {
+            "id": "lesson-3",
+            "title": "Kuis: Digital Mindset",
+            "type": "quiz",
+            "duration": "10 menit",
+            "points": 20,
+            "questions": 8
+          }
+        ]
+      },
+      {
+        "id": "mod-2",
+        "title": "Digital Tools",
+        "description": "Menguasai tools digital essensial",
+        "duration": "2 minggu",
+        "lessons": [
+          {
+            "id": "lesson-4",
+            "title": "Cloud Computing Basics",
+            "type": "video",
+            "duration": "25 menit",
+            "points": 10
+          },
+          {
+            "id": "lesson-5",
+            "title": "Collaboration Tools",
+            "type": "interactive",
+            "duration": "30 menit",
+            "points": 15
+          },
+          {
+            "id": "lesson-6",
+            "title": "Kuis: Digital Tools",
+            "type": "quiz",
+            "duration": "10 menit",
+            "points": 20,
+            "questions": 8
+          }
+        ]
+      },
+      {
+        "id": "mod-3",
+        "title": "Digital Strategy",
+        "description": "Merancang strategi transformasi digital",
+        "duration": "1 minggu",
+        "lessons": [
+          {
+            "id": "lesson-7",
+            "title": "Digital Roadmap",
+            "type": "video",
+            "duration": "20 menit",
+            "points": 10
+          },
+          {
+            "id": "lesson-8",
+            "title": "Studi Kasus: Digital Transformation",
+            "type": "case-study",
+            "duration": "35 menit",
+            "points": 20
+          },
+          {
+            "id": "lesson-9",
+            "title": "Ujian Akhir",
+            "type": "exam",
+            "duration": "40 menit",
+            "points": 40,
+            "questions": 15
+          }
+        ]
+      }
+    ],
+    "badges": [
+      {
+        "id": "badge-digital-ready",
+        "name": "Digital Ready",
+        "description": "Menyelesaikan modul pertama",
+        "icon": "💻",
+        "requirement": "complete_module_1"
+      },
+      {
+        "id": "badge-digital-savvy",
+        "name": "Digital Savvy",
+        "description": "Skor 80%+ pada kuis tools",
+        "icon": "⚡",
+        "requirement": "quiz_score_80"
+      },
+      {
+        "id": "badge-transformer",
+        "name": "Digital Transformer",
+        "description": "Menyelesaikan seluruh pelatihan",
+        "icon": "🎓",
+        "requirement": "complete_all"
+      }
+    ],
+    "totalPoints": 155,
+    "passingScore": 70
+  }
+}

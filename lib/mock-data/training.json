@@ -1,0 +1,55 @@
+{
+  "programs": [
+    {
+      "id": "train-001",
+      "name": "Leadership Essentials",
+      "provider": "BKN Training Center",
+      "category": "Leadership",
+      "duration": "8 weeks",
+      "format": "Hybrid",
+      "credits": 40,
+      "targetCompetencies": ["leadership", "communication"],
+      "description": "Comprehensive leadership training for aspiring managers",
+      "startDate": "2025-12-01",
+      "seatsAvailable": 15,
+      "seatsTotal": 30,
+      "rating": 4.8,
+      "reviewCount": 124,
+      "matchScore": 85
+    },
+    {
+      "id": "train-002",
+      "name": "Advanced Data Analytics",
+      "provider": "Ministry of Finance",
+      "category": "Technical",
+      "duration": "6 weeks",
+      "format": "Online",
+      "credits": 30,
+      "targetCompetencies": ["analytics", "technical"],
+      "description": "Master advanced analytics techniques for policy analysis",
+      "startDate": "2025-11-15",
+      "seatsAvailable": 20,
+      "seatsTotal": 40,
+      "rating": 4.9,
+      "reviewCount": 89,
+      "matchScore": 78
+    },
+    {
+      "id": "train-003",
+      "name": "Digital Transformation",
+      "provider": "BSSN",
+      "category": "Digital",
+      "duration": "4 weeks",
+      "format": "Online",
+      "credits": 20,
+      "targetCompetencies": ["digital"],
+      "description": "Understanding digital transformation in public sector",
+      "startDate": "2025-11-20",
+      "seatsAvailable": 25,
+      "seatsTotal": 50,
+      "rating": 4.7,
+      "reviewCount": 156,
+      "matchScore": 72
+    }
+  ]
+}
