@@ -69,6 +69,7 @@ export default function CareerGPSPage() {
         userName={currentUser.name} 
         userPosition={currentUser.currentPosition}
         showBackButton
+        backUrl="/dashboard"
         title={TEXT.careerGps.title}
       />
       <PageContainer 

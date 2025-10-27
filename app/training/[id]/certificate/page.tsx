@@ -75,6 +75,7 @@ export default function CertificatePage() {
         userName={currentUser.name} 
         userPosition={currentUser.currentPosition}
         showBackButton
+        backUrl={`/training/${trainingId}`}
         title="Sertifikat"
       />
       <PageContainer>

@@ -191,6 +191,7 @@ export default function ModulePage() {
         userName={currentUser.name} 
         userPosition={currentUser.currentPosition}
         showBackButton
+        backUrl={`/training/${trainingId}`}
         title={module.title}
       />
       <PageContainer>

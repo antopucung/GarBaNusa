@@ -86,6 +86,7 @@ export default function TrainingDetailPage() {
         userName={currentUser.name} 
         userPosition={currentUser.currentPosition}
         showBackButton
+        backUrl="/dashboard"
         title={training.name}
       />
       <PageContainer>

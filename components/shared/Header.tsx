@@ -8,9 +8,10 @@ interface HeaderProps {
   userPosition?: string;
   showBackButton?: boolean;
   title?: string;
+  backUrl?: string; // Explicit back URL instead of browser history
 }
 
-export default function Header({ userName, userPosition, showBackButton, title }: HeaderProps) {
+export default function Header({ userName, userPosition, showBackButton, title, backUrl }: HeaderProps) {
   const router = useRouter();
 
   const handleLogout = () => {
@@ -19,7 +20,11 @@ export default function Header({ userName, userPosition, showBackButton, title }
   };
 
   const handleBack = () => {
-    router.back();
+    if (backUrl) {
+      router.push(backUrl);
+    } else {
+      router.back();
+    }
   };
 
   return (

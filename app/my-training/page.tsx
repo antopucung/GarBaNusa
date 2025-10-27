@@ -56,6 +56,7 @@ export default function MyTrainingPage() {
         userName={currentUser.name} 
         userPosition={currentUser.currentPosition}
         showBackButton
+        backUrl="/dashboard"
         title="Pelatihan Saya"
       />
       <PageContainer 
