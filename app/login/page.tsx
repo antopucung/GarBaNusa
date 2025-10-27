@@ -157,16 +157,16 @@ export default function LoginPage() {
                   <button
                     onClick={() => quickLogin(account.email)}
                     disabled={loading}
-                    className="w-full text-left px-4 py-3 bg-gradient-to-r from-gray-50 to-gray-100 hover:from-blue-50 hover:to-indigo-50 rounded-xl transition-all border-2 border-gray-200 hover:border-blue-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full text-left px-4 py-3 pr-12 bg-gradient-to-r from-gray-50 to-gray-100 hover:from-blue-50 hover:to-indigo-50 rounded-xl transition-all border-2 border-gray-200 hover:border-blue-300 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <div className="flex justify-between items-center">
-                      <div className="flex-1">
-                        <div className="text-sm font-semibold text-gray-900">{account.email}</div>
+                    <div className="flex justify-between items-center gap-2">
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm font-semibold text-gray-900 truncate">{account.email}</div>
                         <div className="text-xs text-gray-500 font-medium">{account.role}</div>
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 flex-shrink-0">
                         {userDataStatus[account.id] && (
-                          <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded font-bold">
+                          <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded font-bold whitespace-nowrap">
                             Ada Data
                           </span>
                         )}
@@ -183,7 +183,7 @@ export default function LoginPage() {
                         handleResetUser(account.id, account.name);
                       }}
                       disabled={resettingUser === account.id}
-                      className="absolute top-2 right-2 px-2 py-1 bg-red-100 text-red-700 rounded text-xs font-bold hover:bg-red-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="absolute top-1/2 -translate-y-1/2 right-2 w-8 h-8 flex items-center justify-center bg-red-100 text-red-700 rounded-lg text-sm font-bold hover:bg-red-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed z-10 shadow-sm"
                       title={`Reset data ${account.name}`}
                     >
                       {resettingUser === account.id ? '🔄' : '🗑️'}
