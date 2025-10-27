@@ -4,9 +4,11 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getCurrentUser } from '@/lib/auth';
 import { getEnrollments } from '@/lib/training-manager';
+import { getTrainingProgress } from '@/lib/training-progress';
 import Header from '@/components/shared/Header';
 import PageContainer from '@/components/shared/PageContainer';
 import trainingData from '@/lib/mock-data/training.json';
+import trainingContent from '@/lib/mock-data/training-content.json';
 
 export default function MyTrainingPage() {
   const router = useRouter();
@@ -23,15 +25,53 @@ export default function MyTrainingPage() {
     loadEnrollments();
   }, [router]);
 
+  // Refresh data when page becomes visible (e.g., after navigating back)
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden && currentUser) {
+        loadEnrollments();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, [currentUser]);
+
   const loadEnrollments = () => {
     const userEnrollments = getEnrollments();
     
-    // Match with full training data
+    // Match with full training data and calculate actual progress
     const enrichedEnrollments = userEnrollments.map(enrollment => {
       const trainingDetail = trainingData.programs.find(p => p.id === enrollment.trainingId);
+      
+      // Calculate actual progress from completed lessons
+      const content = (trainingContent as any)[enrollment.trainingId];
+      const progress = getTrainingProgress(enrollment.trainingId);
+      
+      let actualProgress = 0;
+      let actualStatus = enrollment.status;
+      
+      if (content && progress) {
+        const totalLessons = content.modules.reduce((sum: number, mod: any) => sum + mod.lessons.length, 0);
+        const completedLessons = progress.modules.reduce((sum: number, mod: any) => 
+          sum + mod.lessons.filter((l: any) => l.completed).length, 0);
+        actualProgress = Math.round((completedLessons / totalLessons) * 100);
+        
+        // Update status based on actual progress
+        if (actualProgress === 100) {
+          actualStatus = 'completed';
+        } else if (actualProgress > 0) {
+          actualStatus = 'in-progress';
+        } else {
+          actualStatus = 'enrolled';
+        }
+      }
+      
       return {
         ...enrollment,
-        ...trainingDetail
+        ...trainingDetail,
+        progress: actualProgress,
+        status: actualStatus
       };
     });
     

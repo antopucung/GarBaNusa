@@ -4,7 +4,10 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getCurrentUser, mockLogout } from '@/lib/auth';
 import usersData from '@/lib/mock-data/users.json';
+import trainingContent from '@/lib/mock-data/training-content.json';
 import { getUserProfile, getAllUserProfiles } from '@/lib/user-profile-manager';
+import { getEnrollments } from '@/lib/training-manager';
+import { getTrainingProgress } from '@/lib/training-progress';
 import { TEXT } from '@/lib/constants';
 
 export default function SupervisorDashboardPage() {
@@ -36,7 +39,34 @@ export default function SupervisorDashboardPage() {
       .filter(u => u.supervisorId === supervisorId)
       .map(u => {
         const liveProfile = allProfiles.find(p => p.id === u.id);
-        return liveProfile || u;
+        const baseUser = liveProfile || u;
+        
+        // Calculate actual training completion from localStorage
+        const userEnrollmentsStr = localStorage.getItem(`userEnrollments_${u.id}`);
+        const userEnrollments = userEnrollmentsStr ? JSON.parse(userEnrollmentsStr) : [];
+        let completedTrainings = 0;
+        
+        userEnrollments.forEach((enrollment: any) => {
+          const content = (trainingContent as any)[enrollment.trainingId];
+          const progress = getTrainingProgress(enrollment.trainingId);
+          
+          if (content && progress) {
+            const totalLessons = content.modules.reduce((sum: number, mod: any) => sum + mod.lessons.length, 0);
+            const completedLessons = progress.modules.reduce((sum: number, mod: any) => 
+              sum + mod.lessons.filter((l: any) => l.completed).length, 0);
+            const actualProgress = Math.round((completedLessons / totalLessons) * 100);
+            
+            if (actualProgress === 100) {
+              completedTrainings++;
+            }
+          }
+        });
+        
+        return {
+          ...baseUser,
+          actualTrainingCompleted: completedTrainings,
+          totalEnrollments: userEnrollments.length
+        };
       })
       .sort((a, b) => (b.meritScore || 0) - (a.meritScore || 0));
     
@@ -152,7 +182,7 @@ export default function SupervisorDashboardPage() {
                   </div>
                   <div className="bg-green-50 rounded p-2">
                     <div className="text-gray-600">{TEXT.supervisor.trainings}</div>
-                    <div className="font-bold text-gray-900">{member.trainingCompleted?.length || 0}</div>
+                    <div className="font-bold text-gray-900">{member.actualTrainingCompleted || 0}</div>
                   </div>
                   <div className="bg-purple-50 rounded p-2">
                     <div className="text-gray-600">{TEXT.supervisor.progress}</div>
@@ -204,7 +234,7 @@ export default function SupervisorDashboardPage() {
                 <div className="bg-green-50 border border-green-200 rounded-lg p-4">
                   <h5 className="text-sm font-semibold text-green-900 mb-2">📚 {TEXT.supervisor.trainingProgress}</h5>
                   <p className="text-sm text-green-800">
-                    {TEXT.supervisor.completed}: {selectedMember.trainingCompleted?.length || 0} pelatihan
+                    {TEXT.supervisor.completed}: {selectedMember.actualTrainingCompleted || 0} pelatihan
                   </p>
                   {selectedMember.certificationsEarned && selectedMember.certificationsEarned.length > 0 && (
                     <div className="mt-2">

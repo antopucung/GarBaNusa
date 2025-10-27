@@ -5,7 +5,9 @@ import { useRouter } from 'next/navigation';
 import { getCurrentUser, mockLogout } from '@/lib/auth';
 import candidatesData from '@/lib/mock-data/candidates.json';
 import usersData from '@/lib/mock-data/users.json';
+import trainingContent from '@/lib/mock-data/training-content.json';
 import { getCandidatesWithLiveData, initializeLiveDatabase, getUserProfile } from '@/lib/user-profile-manager';
+import { getTrainingProgress } from '@/lib/training-progress';
 import { TEXT } from '@/lib/constants';
 
 export default function MeritBoardPage() {
@@ -49,7 +51,35 @@ export default function MeritBoardPage() {
       }
     });
     
-    setAllCandidates(mergedCandidates);
+    // Calculate actual training completion for each candidate
+    const candidatesWithTraining = mergedCandidates.map(candidate => {
+      const userEnrollmentsStr = localStorage.getItem(`userEnrollments_${candidate.id}`);
+      const userEnrollments = userEnrollmentsStr ? JSON.parse(userEnrollmentsStr) : [];
+      let completedTrainings = 0;
+      
+      userEnrollments.forEach((enrollment: any) => {
+        const content = (trainingContent as any)[enrollment.trainingId];
+        const progress = getTrainingProgress(enrollment.trainingId);
+        
+        if (content && progress) {
+          const totalLessons = content.modules.reduce((sum: number, mod: any) => sum + mod.lessons.length, 0);
+          const completedLessons = progress.modules.reduce((sum: number, mod: any) => 
+            sum + mod.lessons.filter((l: any) => l.completed).length, 0);
+          const actualProgress = Math.round((completedLessons / totalLessons) * 100);
+          
+          if (actualProgress === 100) {
+            completedTrainings++;
+          }
+        }
+      });
+      
+      return {
+        ...candidate,
+        actualTrainingCompleted: completedTrainings
+      };
+    });
+    
+    setAllCandidates(candidatesWithTraining);
   }, [router]);
 
   const handleLogout = () => {
@@ -266,8 +296,8 @@ export default function MeritBoardPage() {
                   <div className="flex items-center gap-4 text-sm">
                     <span className="text-gray-600">{TEXT.meritBoard.match}: {candidate.competencyMatch}%</span>
                     <span className="text-gray-600">{TEXT.meritBoard.tenure}: {candidate.tenure || 5} {TEXT.meritBoard.years}</span>
-                    {candidate.trainingCompleted && (
-                      <span className="text-green-600">Pelatihan: {candidate.trainingCompleted}</span>
+                    {candidate.actualTrainingCompleted > 0 && (
+                      <span className="text-green-600">Pelatihan: {candidate.actualTrainingCompleted}</span>
                     )}
                   </div>
                 </div>
@@ -633,11 +663,11 @@ export default function MeritBoardPage() {
                       )}
 
                       {/* Trainings */}
-                      {candidate.trainingCompleted > 0 && (
+                      {candidate.actualTrainingCompleted > 0 && (
                         <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
                           <h4 className="text-sm font-semibold text-amber-900 mb-2">{TEXT.meritBoard.training}</h4>
                           <div className="text-sm text-amber-800">
-                            {TEXT.supervisor.completed}: {candidate.trainingCompleted} {TEXT.meritBoard.programs}
+                            {TEXT.supervisor.completed}: {candidate.actualTrainingCompleted} {TEXT.meritBoard.programs}
                           </div>
                         </div>
                       )}

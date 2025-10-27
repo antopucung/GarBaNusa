@@ -5,12 +5,14 @@ import { useRouter } from 'next/navigation';
 import { getCurrentUser } from '@/lib/auth';
 import usersData from '@/lib/mock-data/users.json';
 import trainingData from '@/lib/mock-data/training.json';
+import trainingContent from '@/lib/mock-data/training-content.json';
 import Header from '@/components/shared/Header';
 import PageContainer from '@/components/shared/PageContainer';
 import StatCard from '@/components/shared/StatCard';
 import TrainingModal from '@/components/shared/TrainingModal';
 import { TEXT } from '@/lib/constants';
 import { getEnrollments } from '@/lib/training-manager';
+import { getTrainingProgress } from '@/lib/training-progress';
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -70,8 +72,18 @@ export default function DashboardPage() {
   };
   
   const getEnrollmentProgress = (trainingId: string) => {
-    const enrollment = myEnrollments.find(e => e.trainingId === trainingId);
-    return enrollment?.progress || 0;
+    // Calculate actual progress from completed lessons
+    const content = (trainingContent as any)[trainingId];
+    const progress = getTrainingProgress(trainingId);
+    
+    if (content && progress) {
+      const totalLessons = content.modules.reduce((sum: number, mod: any) => sum + mod.lessons.length, 0);
+      const completedLessons = progress.modules.reduce((sum: number, mod: any) => 
+        sum + mod.lessons.filter((l: any) => l.completed).length, 0);
+      return Math.round((completedLessons / totalLessons) * 100);
+    }
+    
+    return 0;
   };
 
   return (
