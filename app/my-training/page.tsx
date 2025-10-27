@@ -82,6 +82,14 @@ export default function MyTrainingPage() {
     router.push(`/training/${trainingId}`);
   };
 
+  const handleViewCertificate = (training: any) => {
+    if (training.status === 'completed') {
+      router.push(`/training/${training.trainingId}/certificate`);
+    } else {
+      alert(`🔒 Sertifikat Terkunci\n\nAnda perlu menyelesaikan seluruh modul pelatihan terlebih dahulu.\n\nProgress Anda: ${training.progress}%`);
+    }
+  };
+
   if (!currentUser) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -207,11 +215,11 @@ export default function MyTrainingPage() {
                     {training.progress === 0 ? '🚀 Mulai Belajar' : training.progress === 100 ? '📖 Review Materi' : '📚 Lanjutkan Belajar'}
                   </button>
                   <button
-                    onClick={() => router.push(`/training/${training.trainingId}/certificate`)}
+                    onClick={() => handleViewCertificate(training)}
                     className={`flex-1 px-4 py-3 rounded-xl font-semibold transition-all ${
                       training.status === 'completed'
-                        ? 'bg-gradient-to-r from-green-600 to-emerald-600 text-white hover:from-green-700 hover:to-emerald-700 shadow-lg'
-                        : 'border-2 border-gray-300 text-gray-700 hover:bg-gray-50'
+                        ? 'bg-gradient-to-r from-green-600 to-emerald-600 text-white hover:from-green-700 hover:to-emerald-700 shadow-lg cursor-pointer'
+                        : 'border-2 border-gray-300 text-gray-500 bg-gray-50 cursor-not-allowed'
                     }`}
                   >
                     {training.status === 'completed' ? '📄 Lihat Sertifikat' : '🔒 Sertifikat Terkunci'}
