@@ -9,6 +9,7 @@ import trainingContent from '@/lib/mock-data/training-content.json';
 import { getCandidatesWithLiveData, initializeLiveDatabase, getUserProfile } from '@/lib/user-profile-manager';
 import { getTrainingProgress } from '@/lib/training-progress';
 import { TEXT } from '@/lib/constants';
+import { generateFraudChecklist, type FraudCheckReport } from '@/lib/fraud-detection';
 
 export default function MeritBoardPage() {
   const router = useRouter();
@@ -19,6 +20,10 @@ export default function MeritBoardPage() {
   const [viewMode, setViewMode] = useState<'all' | 'supervisor' | 'asn'>('all');
   const [compareList, setCompareList] = useState<any[]>([]);
   const [showCompareModal, setShowCompareModal] = useState(false);
+  const [showFraudCheck, setShowFraudCheck] = useState(false);
+  const [fraudReport, setFraudReport] = useState<FraudCheckReport | null>(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [analysisProgress, setAnalysisProgress] = useState(0);
 
   useEffect(() => {
     const user = getCurrentUser();
@@ -113,6 +118,36 @@ export default function MeritBoardPage() {
 
   const isInCompareList = (candidateId: string) => {
     return compareList.some(c => c.id === candidateId);
+  };
+
+  const handleRunFraudCheck = async (candidate: any) => {
+    setIsAnalyzing(true);
+    setAnalysisProgress(0);
+    
+    // Simulate AI analysis with progress
+    const steps = [
+      { progress: 15, delay: 400, message: 'Menganalisis riwayat pelatihan...' },
+      { progress: 30, delay: 500, message: 'Memeriksa konsistensi skor...' },
+      { progress: 50, delay: 600, message: 'Mengevaluasi progres karier...' },
+      { progress: 70, delay: 500, message: 'Menganalisis umpan balik...' },
+      { progress: 85, delay: 400, message: 'Memeriksa kelengkapan data...' },
+      { progress: 100, delay: 300, message: 'Menyelesaikan analisis...' },
+    ];
+    
+    for (const step of steps) {
+      await new Promise(resolve => setTimeout(resolve, step.delay));
+      setAnalysisProgress(step.progress);
+    }
+    
+    // Generate report
+    const report = generateFraudChecklist(candidate);
+    setFraudReport(report);
+    
+    // Small delay before showing modal
+    await new Promise(resolve => setTimeout(resolve, 300));
+    
+    setIsAnalyzing(false);
+    setShowFraudCheck(true);
   };
 
   if (!currentUser || allCandidates.length === 0) {
@@ -456,6 +491,19 @@ export default function MeritBoardPage() {
                   </div>
                 )}
 
+                {/* AI Fraud Check */}
+                <div>
+                  <button
+                    onClick={() => handleRunFraudCheck(selectedCandidate)}
+                    className="w-full px-4 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-sm font-semibold rounded-lg hover:from-purple-700 hover:to-indigo-700 shadow-lg transition-all"
+                  >
+                    🤖 {TEXT.meritBoard.runVerification}
+                  </button>
+                  <p className="text-xs text-gray-500 mt-1 text-center">
+                    {TEXT.meritBoard.verificationSubtitle}
+                  </p>
+                </div>
+
                 {/* Actions */}
                 <div className="flex gap-2">
                   <button className="flex-1 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700">
@@ -719,6 +767,246 @@ export default function MeritBoardPage() {
                 <button className="flex-1 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700">
                   {TEXT.meritBoard.exportComparisonReport}
                 </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* AI Analysis Loading Modal */}
+      {isAnalyzing && (
+        <div className="fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-8">
+            {/* AI Animation */}
+            <div className="text-center mb-6">
+              <div className="inline-block relative">
+                <div className="w-24 h-24 mx-auto mb-4 relative">
+                  {/* Spinning circles */}
+                  <div className="absolute inset-0 border-4 border-purple-200 rounded-full"></div>
+                  <div className="absolute inset-0 border-4 border-transparent border-t-purple-600 rounded-full animate-spin"></div>
+                  <div className="absolute inset-2 border-4 border-transparent border-t-indigo-600 rounded-full animate-spin" style={{ animationDirection: 'reverse', animationDuration: '1s' }}></div>
+                  
+                  {/* AI Icon */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="text-4xl">🤖</span>
+                  </div>
+                </div>
+              </div>
+              
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                AI Sedang Menganalisis
+              </h3>
+              <p className="text-gray-600">
+                Memeriksa data kandidat secara menyeluruh...
+              </p>
+            </div>
+
+            {/* Progress Bar */}
+            <div className="mb-6">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-semibold text-gray-700">Progress</span>
+                <span className="text-sm font-bold text-purple-600">{analysisProgress}%</span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                <div 
+                  className="bg-gradient-to-r from-purple-600 to-indigo-600 h-3 rounded-full transition-all duration-500 ease-out relative overflow-hidden"
+                  style={{ width: `${analysisProgress}%` }}
+                >
+                  {/* Shimmer effect */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-30 animate-shimmer"></div>
+                </div>
+              </div>
+            </div>
+
+            {/* Analysis Steps */}
+            <div className="space-y-2 text-sm">
+              <div className={`flex items-center gap-2 transition-all ${analysisProgress >= 15 ? 'text-purple-600' : 'text-gray-400'}`}>
+                <span>{analysisProgress >= 15 ? '✓' : '○'}</span>
+                <span>Menganalisis riwayat pelatihan</span>
+              </div>
+              <div className={`flex items-center gap-2 transition-all ${analysisProgress >= 30 ? 'text-purple-600' : 'text-gray-400'}`}>
+                <span>{analysisProgress >= 30 ? '✓' : '○'}</span>
+                <span>Memeriksa konsistensi skor</span>
+              </div>
+              <div className={`flex items-center gap-2 transition-all ${analysisProgress >= 50 ? 'text-purple-600' : 'text-gray-400'}`}>
+                <span>{analysisProgress >= 50 ? '✓' : '○'}</span>
+                <span>Mengevaluasi progres karier</span>
+              </div>
+              <div className={`flex items-center gap-2 transition-all ${analysisProgress >= 70 ? 'text-purple-600' : 'text-gray-400'}`}>
+                <span>{analysisProgress >= 70 ? '✓' : '○'}</span>
+                <span>Menganalisis umpan balik</span>
+              </div>
+              <div className={`flex items-center gap-2 transition-all ${analysisProgress >= 85 ? 'text-purple-600' : 'text-gray-400'}`}>
+                <span>{analysisProgress >= 85 ? '✓' : '○'}</span>
+                <span>Memeriksa kelengkapan data</span>
+              </div>
+              <div className={`flex items-center gap-2 transition-all ${analysisProgress >= 100 ? 'text-green-600 font-semibold' : 'text-gray-400'}`}>
+                <span>{analysisProgress >= 100 ? '✓' : '○'}</span>
+                <span>Menyelesaikan analisis</span>
+              </div>
+            </div>
+
+            {/* Info */}
+            <div className="mt-6 p-3 bg-blue-50 border border-blue-200 rounded-lg text-center">
+              <p className="text-xs text-blue-800">
+                AI menganalisis 8 kategori verifikasi untuk kandidat ini
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* AI Fraud Detection Wizard */}
+      {showFraudCheck && fraudReport && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            {/* Header */}
+            <div className="sticky top-0 bg-gradient-to-r from-purple-600 to-indigo-600 text-white p-6 flex items-center justify-between rounded-t-xl">
+              <div>
+                <h2 className="text-2xl font-bold flex items-center gap-2">
+                  🤖 {TEXT.meritBoard.aiVerificationChecklist}
+                </h2>
+                <p className="text-sm mt-1 opacity-90">
+                  {TEXT.meritBoard.candidate}: {fraudReport.userName} | {TEXT.meritBoard.riskLevel}: {fraudReport.overallRisk.toUpperCase()}
+                </p>
+              </div>
+              <button
+                onClick={() => setShowFraudCheck(false)}
+                className="text-white hover:bg-white hover:bg-opacity-20 rounded-full p-2 transition-all"
+                aria-label="Close fraud check wizard"
+                title="Close"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="p-6 space-y-6">
+              {/* Important Notice */}
+              <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-4">
+                <div className="flex items-start gap-3">
+                  <div className="text-blue-600 text-2xl">ℹ️</div>
+                  <div className="flex-1">
+                    <h3 className="font-bold text-blue-900 mb-1">{TEXT.meritBoard.importantNotice}</h3>
+                    <p className="text-sm text-blue-800">
+                      {TEXT.meritBoard.noticeDescription}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Risk Overview */}
+              <div className={`border-2 rounded-lg p-4 ${
+                fraudReport.overallRisk === 'high' ? 'bg-red-50 border-red-300' :
+                fraudReport.overallRisk === 'medium' ? 'bg-yellow-50 border-yellow-300' :
+                'bg-green-50 border-green-300'
+              }`}>
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="font-bold text-lg">{TEXT.meritBoard.overallRiskAssessment}</h3>
+                  <span className={`px-3 py-1 rounded-full text-sm font-bold ${
+                    fraudReport.overallRisk === 'high' ? 'bg-red-200 text-red-900' :
+                    fraudReport.overallRisk === 'medium' ? 'bg-yellow-200 text-yellow-900' :
+                    'bg-green-200 text-green-900'
+                  }`}>
+                    {fraudReport.overallRisk.toUpperCase()}
+                  </span>
+                </div>
+                <p className="text-sm">{fraudReport.summary}</p>
+              </div>
+
+              {/* Checklist Items */}
+              <div>
+                <h3 className="font-bold text-lg mb-4">📋 {TEXT.meritBoard.reviewChecklist} ({fraudReport.itemsToReview.length} {TEXT.meritBoard.items})</h3>
+                <div className="space-y-3">
+                  {fraudReport.itemsToReview.map((item, index) => (
+                    <div 
+                      key={index}
+                      className={`border-2 rounded-lg p-4 ${
+                        item.status === 'suspicious' ? 'bg-red-50 border-red-300' :
+                        item.status === 'review' ? 'bg-yellow-50 border-yellow-300' :
+                        'bg-gray-50 border-gray-300'
+                      }`}
+                    >
+                      <div className="flex items-start justify-between mb-2">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className={`px-2 py-0.5 rounded text-xs font-bold ${
+                              item.severity === 'high' ? 'bg-red-200 text-red-900' :
+                              item.severity === 'medium' ? 'bg-yellow-200 text-yellow-900' :
+                              'bg-gray-200 text-gray-900'
+                            }`}>
+                              {item.severity.toUpperCase()}
+                            </span>
+                            <span className="font-bold text-gray-900">{item.category}</span>
+                          </div>
+                          <p className="text-sm text-gray-700 mb-2">{item.concern}</p>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2 text-sm">
+                        <div className="bg-white bg-opacity-50 rounded p-2">
+                          <span className="font-semibold text-gray-700">{TEXT.meritBoard.dataPoint}: </span>
+                          <span className="text-gray-900">{item.dataPoint}</span>
+                        </div>
+                        
+                        {item.expectedRange && (
+                          <div className="bg-white bg-opacity-50 rounded p-2">
+                            <span className="font-semibold text-gray-700">{TEXT.meritBoard.expectedRange}: </span>
+                            <span className="text-gray-900">{item.expectedRange}</span>
+                          </div>
+                        )}
+
+                        <div className="bg-blue-50 border border-blue-200 rounded p-2">
+                          <span className="font-semibold text-blue-900">✓ {TEXT.meritBoard.recommendation}: </span>
+                          <span className="text-blue-800">{item.recommendation}</span>
+                        </div>
+                      </div>
+
+                      {/* Checklist checkbox */}
+                      <div className="mt-3 pt-3 border-t border-gray-300">
+                        <label className="flex items-center gap-2 text-sm cursor-pointer hover:bg-white hover:bg-opacity-50 p-2 rounded">
+                          <input type="checkbox" className="w-4 h-4" />
+                          <span className="font-semibold">{TEXT.meritBoard.verified}</span>
+                        </label>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Next Steps */}
+              <div className="bg-gradient-to-r from-purple-50 to-indigo-50 border-2 border-purple-200 rounded-lg p-4">
+                <h3 className="font-bold text-purple-900 mb-2">📌 {TEXT.meritBoard.nextStepsTitle}</h3>
+                <ul className="space-y-1 text-sm text-purple-800">
+                  {TEXT.meritBoard.nextStepsItems.map((step, idx) => (
+                    <li key={idx}>• {step}</li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Actions */}
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShowFraudCheck(false)}
+                  className="flex-1 px-4 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition-all"
+                >
+                  {TEXT.meritBoard.closeChecklist}
+                </button>
+                <button
+                  onClick={() => {
+                    alert('📄 Laporan daftar verifikasi akan diekspor ke PDF dengan timestamp dan catatan verifikasi Anda.');
+                  }}
+                  className="flex-1 px-4 py-3 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700 transition-all"
+                >
+                  📥 {TEXT.meritBoard.exportChecklistReport}
+                </button>
+              </div>
+
+              {/* Timestamp */}
+              <div className="text-center text-xs text-gray-500">
+                {TEXT.meritBoard.generated}: {new Date(fraudReport.checkedAt).toLocaleString('id-ID')} | 
+                {TEXT.meritBoard.committee}: {currentUser.name}
               </div>
             </div>
           </div>

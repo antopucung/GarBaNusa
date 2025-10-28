@@ -9,6 +9,7 @@ import trainingData from '@/lib/mock-data/training.json';
 import trainingContent from '@/lib/mock-data/training-content.json';
 import { getTrainingProgress } from '@/lib/training-progress';
 import { getEnrollments } from '@/lib/training-manager';
+import { generateCertificateQRCode, generateQRCodeSVG } from '@/lib/fraud-detection';
 
 export default function CertificatePage() {
   const router = useRouter();
@@ -20,6 +21,8 @@ export default function CertificatePage() {
   const [content, setContent] = useState<any>(null);
   const [progress, setProgress] = useState<any>(null);
   const [enrollment, setEnrollment] = useState<any>(null);
+  const [qrCodeUrl, setQrCodeUrl] = useState<string>('');
+  const [qrCodeSVG, setQrCodeSVG] = useState<string>('');
 
   useEffect(() => {
     const user = getCurrentUser();
@@ -41,6 +44,22 @@ export default function CertificatePage() {
     const enrollments = getEnrollments();
     const userEnrollment = enrollments.find(e => e.trainingId === trainingId);
     setEnrollment(userEnrollment);
+
+    // Generate QR code for certificate
+    if (user && trainingDetail) {
+      const completionDate = userEnrollment?.enrolledAt ? new Date(userEnrollment.enrolledAt) : new Date();
+      completionDate.setDate(completionDate.getDate() + 56); // 8 weeks later
+      
+      const qrUrl = generateCertificateQRCode({
+        userId: user.id,
+        trainingId: trainingId,
+        completionDate: completionDate
+      });
+      setQrCodeUrl(qrUrl);
+      
+      const qrSvg = generateQRCodeSVG(qrUrl, 120);
+      setQrCodeSVG(qrSvg);
+    }
   }, [router, trainingId]);
 
   const handleDownload = () => {
@@ -177,6 +196,22 @@ export default function CertificatePage() {
                   </div>
                 </div>
               </div>
+              
+              {/* QR Code - Top Right Corner */}
+              {qrCodeSVG && (
+                <div className="absolute top-8 right-8 bg-white p-3 rounded-lg shadow-lg border-2 border-gray-300">
+                  <div 
+                    dangerouslySetInnerHTML={{ __html: qrCodeSVG }}
+                    className="w-28 h-28"
+                  />
+                  <p className="text-xs text-center text-gray-600 mt-2 font-semibold">
+                    Scan to Verify
+                  </p>
+                  <p className="text-xs text-center text-gray-500">
+                    Verifikasi Sertifikat
+                  </p>
+                </div>
+              )}
             </div>
             
             {/* Statistics */}
